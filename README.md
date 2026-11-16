@@ -1,2 +1,2 @@
 # OpenConext-notifications
-Notifact
+Notifications

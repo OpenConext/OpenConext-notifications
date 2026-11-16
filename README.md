@@ -47,4 +47,4 @@ mvn clean install
 docker compose up --build
 ```
 
-The application is then available on http://localhost:8080 (fake login, `local` profile).
+The application is then available on http://localhost:8080 (fake login, `local` profile). Or not.

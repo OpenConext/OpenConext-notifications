@@ -51,7 +51,7 @@ jobs:
           "CREATE USER 'notifications'@'%' IDENTIFIED BY 'secret';";
       - run: |
           mysql -uroot -h127.0.0.1 -e \
-          "GRANT ALL privileges ON `notifications`.* TO 'notifications'@'%';"
+          "GRANT ALL privileges ON notifications.* TO 'notifications'@'%';"
       - name: Install the Playwright browser
         run: |
           yarn install --frozen-lockfile

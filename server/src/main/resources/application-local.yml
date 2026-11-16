@@ -1,0 +1,4 @@
+# Local development: fake login, no OIDC provider needed
+logging:
+  level:
+    org.springframework.security: INFO

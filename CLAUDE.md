@@ -11,7 +11,7 @@ Internal app to manage notifications for other apps. Maven multi-module: `server
 - Everything: `mvn clean install -Pe2e` (client lint + prettier + tsc + build, server tests on H2 MariaDB-mode, then e2e against the local MariaDB). Without `-Pe2e` no e2e.
 - Server only: `mvn -pl server test`.
 - Client only (in `client/`): `yarn check`, `yarn build`; e2e: `yarn e2e` with the server running (`mvn -pl server spring-boot:run -Dspring-boot.run.profiles=local`, fake login).
-- Keep the build warning free (`build.sh` runs lint + prettier before the build).
+- Keep the build warning free (`build.sh` runs lint and prettier before the build: prettier reformats the sources locally and only checks when `CI` is set).
 
 ## Gotchas
 - Playwright is pinned to an exact version (now `1.65.1`), its browser is installed with `yarn playwright install chromium`; `yarn add` rewrites the pin, re-check afterwards.

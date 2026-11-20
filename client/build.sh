@@ -7,7 +7,12 @@ if [ -n "$NVM_DIR" ] && [ -f "$NVM_DIR/nvm.sh" ] && [ -f .nvmrc ]; then
   nvm use
 fi
 yarn install --frozen-lockfile || exit 1
-yarn lint && yarn prettier || exit 1
+# locally prettier rewrites the files; CI (CI=true) only checks, so unformatted code that was committed fails there
+if [ -n "$CI" ]; then
+  yarn lint && yarn prettier || exit 1
+else
+  yarn prettier-fix && yarn lint || exit 1
+fi
 
 # The SPA index.html is rendered through a short-lived local preview server. A request to it occasionally
 # times out, which a second attempt does not suffer from.

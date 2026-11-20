@@ -16,11 +16,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>openconext-snapshots</id>
-            <url>https://build.openconext.org/repository/public/snapshots</url>
+            <url>dav:https://build.openconext.org/repository/public/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>openconext-releases</id>
-            <url>https://build.openconext.org/repository/public/releases</url>
+            <url>dav:https://build.openconext.org/repository/public/releases</url>
         </repository>
     </distributionManagement>
     <modules>
@@ -28,6 +28,13 @@
         <module>client</module>
     </modules>
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>3.5.3</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

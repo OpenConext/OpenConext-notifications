@@ -10,9 +10,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath/>
     </parent>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>openconext-snapshots</id>
+            <url>https://build.openconext.org/repository/public/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>openconext-releases</id>
+            <url>https://build.openconext.org/repository/public/releases</url>
+        </repository>
+    </distributionManagement>
     <modules>
         <module>server</module>
         <module>client</module>

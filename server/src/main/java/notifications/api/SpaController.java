@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SpaController {
 
-    @GetMapping({"/new", "/edit/{id}", "/logged-out"})
+    @GetMapping({"/new", "/edit/{id}", "/logged-out", "/not-allowed"})
     public String spa() {
         return "forward:/index.html";
     }

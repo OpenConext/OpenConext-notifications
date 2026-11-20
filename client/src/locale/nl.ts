@@ -12,12 +12,21 @@ const nl: AppTranslation = {
         edit: 'Wijzigen',
         delete: 'Verwijderen',
         confirmDelete: 'Bevestig verwijderen',
+        lightMode: 'Lichte modus',
+        darkMode: 'Donkere modus',
+        search: 'Zoeken',
+        previous: 'Vorige',
+        next: 'Volgende',
         logout: 'Uitloggen',
     },
     notifications: {
         title: 'Notificaties',
         new: 'Nieuwe notificatie',
         edit: 'Notificatie wijzigen',
+        deleteTitle: 'Notificatie verwijderen',
+        deleteDescription:
+            'Weet je zeker dat je deze notificatie wilt verwijderen? Dit kan niet ongedaan worden gemaakt.',
+        noResults: 'Geen notificaties gevonden',
         empty: 'Er zijn geen notificaties',
         saved: 'Notificatie opgeslagen',
         deleted: 'Notificatie verwijderd',
@@ -36,6 +45,14 @@ const nl: AppTranslation = {
             text: 'Tekst (markdown)',
             invalidPeriod: 'Het einde moet na de start liggen',
         },
+    },
+    notAllowed: {
+        contactPrefix:
+            'Notificaties is alleen beschikbaar voor geautoriseerde gebruikers. Neem contact op met',
+        contactSuffix: 'bij vragen.',
+        orPrefix: 'Of',
+        login: 'log opnieuw in',
+        orSuffix: 'met een andere instelling',
     },
     loggedOut: {
         title: 'Je bent uitgelogd',

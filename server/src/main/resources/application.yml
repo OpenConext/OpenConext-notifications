@@ -38,12 +38,6 @@ spring:
             jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
-      # Bearer tokens on the CRUD API are validated with token introspection
-      resourceserver:
-        opaquetoken:
-          introspection-uri: "https://connect.test2.surfconext.nl/oidc/introspect"
-          client-id: playground_client
-          client-secret: secret
 
 management:
   endpoints:
@@ -58,8 +52,19 @@ management:
 # (basic authentication) username of the server-to-server API: /api/external/notifications.
 # We don't encode the passwords, they are injected from the deployment.
 notifications:
+  # Users must have this value in the claim edumember_is_member_of to be allowed to log in
+  required-member-of: "urn:mace:surf.nl:invite.test2.surfconext.nl:12cbb06a-2af8-41e1-ac4e-6175cacd1307:surfconext_tpm_core"
   target-apps:
     - name: myconext
       password: secret
     - name: servicedesk
       password: secret
+
+# The resource cleaner removes the notifications that ended more than 5 days ago. Durations are ISO-8601,
+# the lock makes sure only one node runs the cleaner (lock-at-least-for must be less than the cleaner-cron delay).
+cron:
+  cleaner-cron: "PT1H"
+  cleaner-cron-initial-delay: "PT10S"
+  cleaner-lock-at-least-for: "PT5M"
+  cleaner-lock-at-most-for: "PT30M"
+  notification-delete-after-days: 5

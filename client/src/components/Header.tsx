@@ -1,14 +1,37 @@
-import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 
-import { Button, NativeSelect, NativeSelectOption } from '@surfnet/curve-react';
+import {
+    CaretDownIcon,
+    GlobeIcon,
+    MoonIcon,
+    SignOutIcon,
+    SunIcon,
+} from '@phosphor-icons/react';
+import {
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@surfnet/curve-react';
 
 import { logout } from '../api/notifications';
+import logo from '../icons/img.png';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
-import { useConfigStore } from '../store/config';
+import { displayName, useConfigStore } from '../store/config';
+import { type Theme, getTheme, setTheme } from '../store/theme';
 
 export const Header = () => {
     const navigate = useNavigate();
     const user = useConfigStore((state) => state.config?.user);
+    const [theme, setThemeState] = useState<Theme>(getTheme);
+
+    // the menu offers the language that is not active yet
+    const otherLanguage =
+        AVAILABLE_LANGUAGES.find((lang) => lang !== I18n.locale) ?? 'en';
+    const otherTheme: Theme = theme === 'dark' ? 'light' : 'dark';
 
     const doLogout = async () => {
         await logout();
@@ -17,32 +40,65 @@ export const Header = () => {
     };
 
     return (
-        <header className="header">
-            <strong>{I18n.t('globalVariables.productName')}</strong>
-            <div className="header-actions">
-                <NativeSelect
-                    aria-label={I18n.t('languages.language')}
-                    data-testid="language"
-                    value={I18n.locale}
-                    onChange={(e) => {
-                        switchLocale(e.target.value);
-                        window.location.reload();
-                    }}
+        <header className="header-bar">
+            <div className="header">
+                <Link
+                    to="/"
+                    className="header-logo"
+                    aria-label={I18n.t('globalVariables.productName')}
+                    data-testid="home"
                 >
-                    {AVAILABLE_LANGUAGES.map((lang) => (
-                        <NativeSelectOption key={lang} value={lang}>
-                            {I18n.t(`languages.${lang}`)}
-                        </NativeSelectOption>
-                    ))}
-                </NativeSelect>
-                <span data-testid="user">{user}</span>
-                <Button
-                    variant="outline"
-                    data-testid="logout"
-                    onClick={doLogout}
-                >
-                    {I18n.t('common.logout')}
-                </Button>
+                    <img
+                        src={logo}
+                        alt={I18n.t('globalVariables.productName')}
+                    />
+                </Link>
+                <div className="header-user">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            render={
+                                <Button variant="ghost" data-testid="user" />
+                            }
+                        >
+                            {displayName(user)}
+                            <CaretDownIcon aria-hidden="true" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                                data-testid="language"
+                                onClick={() => {
+                                    switchLocale(otherLanguage);
+                                    window.location.reload();
+                                }}
+                            >
+                                <GlobeIcon aria-hidden="true" />
+                                {I18n.t(`languages.${otherLanguage}`)}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                data-testid="theme"
+                                onClick={() => {
+                                    setTheme(otherTheme);
+                                    setThemeState(otherTheme);
+                                }}
+                            >
+                                {otherTheme === 'dark' ? (
+                                    <MoonIcon aria-hidden="true" />
+                                ) : (
+                                    <SunIcon aria-hidden="true" />
+                                )}
+                                {I18n.t(`common.${otherTheme}Mode`)}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                data-testid="logout"
+                                onClick={doLogout}
+                            >
+                                <SignOutIcon aria-hidden="true" />
+                                {I18n.t('common.logout')}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
         </header>
     );

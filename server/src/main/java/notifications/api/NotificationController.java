@@ -22,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.List;
 
-/** CRUD for the GUI, secured with OIDC (session login or bearer access token) */
+/** CRUD for the GUI, secured with the OIDC session login. Bearer tokens are not supported */
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {

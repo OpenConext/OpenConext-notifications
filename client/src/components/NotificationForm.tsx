@@ -1,8 +1,10 @@
 import { Suspense, lazy, useState } from 'react';
 
+import rehypeSanitize from 'rehype-sanitize';
+
 import {
     Button,
-    Input,
+    DatePickerInput,
     Label,
     NativeSelect,
     NativeSelectOption,
@@ -11,21 +13,41 @@ import {
 
 import type { NotificationInput } from '../api/notifications';
 import I18n from '../locale/I18n';
+import { previewSchema } from '../markdown/previewSchema';
 import { useConfigStore } from '../store/config';
 
 // the editor is big, it is only loaded when a notification is created or edited
 const MDEditor = lazy(() => import('@uiw/react-md-editor'));
 
-// <input type="datetime-local"> works with local time without zone
-const toLocalInput = (iso: string) => {
-    const date = new Date(iso);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// dates are shown and typed as dd-mm-yyyy
+const formatDate = (date: Date) =>
+    `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+
+const parseDate = (value: string): Date | undefined => {
+    const match = /^(\d{1,2})-(\d{1,2})-(\d{4})$/.exec(value.trim());
+    if (!match) {
+        return undefined;
+    }
+    const [day, month, year] = match.slice(1).map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getMonth() === month - 1 && date.getDate() === day
+        ? date
+        : undefined;
 };
 
-const defaultStart = () => toLocalInput(new Date().toISOString());
-const defaultEnd = () =>
-    toLocalInput(new Date(Date.now() + 24 * 3600 * 1000).toISOString());
+const startOfDay = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate());
+const endOfDay = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+
+const today = () => startOfDay(new Date());
+const defaultEnd = () => {
+    const date = today();
+    date.setDate(date.getDate() + 5);
+    return date;
+};
 
 type Props = {
     initial?: NotificationInput;
@@ -46,15 +68,18 @@ export const NotificationForm = ({
     const [targetApp, setTargetApp] = useState(
         initial?.targetApp ?? targetApps[0] ?? '',
     );
-    const [startAt, setStartAt] = useState(
-        initial ? toLocalInput(initial.startAt) : defaultStart(),
+    const [startDate, setStartDate] = useState<Date | undefined>(
+        initial ? startOfDay(new Date(initial.startAt)) : today(),
     );
-    const [endsAt, setEndsAt] = useState(
-        initial ? toLocalInput(initial.endsAt) : defaultEnd(),
+    const [endDate, setEndDate] = useState<Date | undefined>(
+        initial ? startOfDay(new Date(initial.endsAt)) : defaultEnd(),
     );
     const [text, setText] = useState(initial?.htmlText ?? '');
 
-    const validPeriod = new Date(endsAt) > new Date(startAt);
+    const validPeriod =
+        startDate !== undefined &&
+        endDate !== undefined &&
+        endDate >= startDate;
     const valid = validPeriod && text.trim() !== '' && targetApp !== '';
 
     return (
@@ -62,11 +87,14 @@ export const NotificationForm = ({
             className="form"
             onSubmit={(e) => {
                 e.preventDefault();
+                if (!startDate || !endDate) {
+                    return;
+                }
                 onSave({
                     targetApp,
                     htmlText: text,
-                    startAt: new Date(startAt).toISOString(),
-                    endsAt: new Date(endsAt).toISOString(),
+                    startAt: startOfDay(startDate).toISOString(),
+                    endsAt: endOfDay(endDate).toISOString(),
                 });
             }}
         >
@@ -92,24 +120,28 @@ export const NotificationForm = ({
                     <Label htmlFor="startAt">
                         {I18n.t('notifications.form.startAt')}
                     </Label>
-                    <Input
+                    <DatePickerInput
                         id="startAt"
-                        type="datetime-local"
                         data-testid="form-start-at"
-                        value={startAt}
-                        onChange={(e) => setStartAt(e.target.value)}
+                        date={startDate}
+                        onDateChange={setStartDate}
+                        showClear={false}
+                        formatDate={formatDate}
+                        parseDate={parseDate}
                     />
                 </div>
                 <div className="field">
                     <Label htmlFor="endsAt">
                         {I18n.t('notifications.form.endsAt')}
                     </Label>
-                    <Input
+                    <DatePickerInput
                         id="endsAt"
-                        type="datetime-local"
                         data-testid="form-ends-at"
-                        value={endsAt}
-                        onChange={(e) => setEndsAt(e.target.value)}
+                        date={endDate}
+                        onDateChange={setEndDate}
+                        showClear={false}
+                        formatDate={formatDate}
+                        parseDate={parseDate}
                     />
                 </div>
             </div>
@@ -130,6 +162,9 @@ export const NotificationForm = ({
                         value={text}
                         onChange={(value) => setText(value ?? '')}
                         preview="live"
+                        previewOptions={{
+                            rehypePlugins: [[rehypeSanitize, previewSchema]],
+                        }}
                         height={320}
                         textareaProps={{
                             'aria-label': I18n.t('notifications.form.text'),
@@ -139,19 +174,19 @@ export const NotificationForm = ({
             </div>
             <div className="actions">
                 <Button
-                    type="submit"
-                    data-testid="form-save"
-                    disabled={!valid || saving}
-                >
-                    {I18n.t('common.save')}
-                </Button>
-                <Button
                     type="button"
                     variant="outline"
                     data-testid="form-cancel"
                     onClick={onCancel}
                 >
                     {I18n.t('common.cancel')}
+                </Button>
+                <Button
+                    type="submit"
+                    data-testid="form-save"
+                    disabled={!valid || saving}
+                >
+                    {I18n.t('common.save')}
                 </Button>
             </div>
         </form>

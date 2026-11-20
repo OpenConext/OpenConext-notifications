@@ -10,12 +10,20 @@ export type AppTranslation = {
         edit: string;
         delete: string;
         confirmDelete: string;
+        lightMode: string;
+        darkMode: string;
+        search: string;
+        previous: string;
+        next: string;
         logout: string;
     };
     notifications: {
         title: string;
         new: string;
         edit: string;
+        deleteTitle: string;
+        deleteDescription: string;
+        noResults: string;
         empty: string;
         saved: string;
         deleted: string;
@@ -34,6 +42,13 @@ export type AppTranslation = {
             text: string;
             invalidPeriod: string;
         };
+    };
+    notAllowed: {
+        contactPrefix: string;
+        contactSuffix: string;
+        orPrefix: string;
+        login: string;
+        orSuffix: string;
     };
     loggedOut: { title: string; description: string; login: string };
 };

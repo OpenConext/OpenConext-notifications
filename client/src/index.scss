@@ -1,26 +1,73 @@
 body {
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     font-family: system-ui, sans-serif;
+    background-color: var(--muted);
+    color: var(--foreground);
+}
+
+#root,
+body > div:first-child {
+    display: contents;
+}
+
+main {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+*,
+:before,
+:after {
+    border-color: var(--border);
 }
 
 .page {
-    max-width: 1100px;
+    width: 100%;
+    max-width: 42rem;
+    padding: calc(var(--spacing) * 12) calc(var(--spacing) * 4)
+        calc(var(--spacing) * 24);
+    flex: 1;
     margin: 0 auto;
-    padding: 24px;
+
+    h1 {
+        margin-bottom: calc(var(--spacing) * 6);
+    }
+
+    // as wide as the header
+    &.page-wide {
+        max-width: 82.5rem;
+    }
+}
+
+.header-bar {
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
 }
 
 .header {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 24px;
-    border-bottom: 1px solid #ddd;
+    gap: calc(var(--spacing) * 8);
+    max-width: 82.5rem;
+    height: calc(var(--spacing) * 18);
+    padding: 0 calc(var(--spacing) * 4);
+    margin: 0 auto;
+    display: flex;
 
-    .header-actions {
+    .header-logo {
         display: flex;
         align-items: center;
-        gap: 12px;
+
+        img {
+            display: block;
+            height: calc(var(--spacing) * 14);
+            width: auto;
+        }
+    }
+
+    .header-user {
+        margin-left: auto;
     }
 }
 
@@ -28,13 +75,60 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    gap: calc(var(--spacing) * 4);
+    margin-bottom: calc(var(--spacing) * 6);
+
+    .search {
+        max-width: 24rem;
+        background-color: var(--background);
+    }
+}
+
+.table-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--spacing) * 3);
+    background-color: var(--background);
+
+    thead tr {
+        background-color: var(--muted);
+    }
+
+    th,
+    td {
+        padding: calc(var(--spacing) * 4);
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        border-top: 1px solid var(--border);
+    }
+
+    .sort {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(var(--spacing) * 1.5);
+        font: inherit;
+        color: inherit;
+        background: none;
+        cursor: pointer;
+    }
+}
+
+.pagination {
+    margin-top: calc(var(--spacing) * 6);
 }
 
 .form {
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    // the page background is muted, the inputs are white
+    [data-slot='native-select'],
+    [data-slot='input-group'] {
+        background-color: var(--background);
+    }
 
     .field {
         display: flex;
@@ -50,6 +144,7 @@ body {
 
     .actions {
         display: flex;
+        justify-content: flex-end;
         gap: 12px;
     }
 }

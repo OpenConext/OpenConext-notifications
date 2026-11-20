@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @TestPropertySource(properties = {
         "spring.datasource.url=jdbc:h2:mem:test;MODE=MariaDB;DB_CLOSE_DELAY=-1",
         "spring.datasource.username=sa",
@@ -80,6 +82,12 @@ class NotificationsApplicationTest {
     @Test
     void crudRequiresLogin() throws Exception {
         mockMvc.perform(get("/api/notifications")).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void bearerTokensAreNotSupported() throws Exception {
+        mockMvc.perform(get("/api/notifications").header("Authorization", "Bearer some-access-token"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

@@ -3,7 +3,7 @@
 Internal app to manage notifications for other apps. Maven multi-module: `server` (Spring Boot 4, Java 21, package `notifications`) and `client` (React 19 / TypeScript, react-router SPA, curve-react, i18n-js en/nl).
 
 - `html_text` column holds the **markdown** source. The server-to-server API `GET /api/external/notifications?format=html|markdown` (basic auth, username = target app from `application.yml`) renders it (commonmark + OWASP sanitizer).
-- CRUD API `/api/notifications` is OIDC secured (session login `oidcng`, or bearer token). No landing page: unauthenticated users are redirected to the OIDC login at once.
+- CRUD API `/api/notifications` is only for the GUI and OIDC session secured (login `oidcng`); bearer tokens are not supported. No landing page: unauthenticated users are redirected to the OIDC login at once.
 - Schema is owned by Flyway (`server/src/main/resources/db/migration`), Hibernate only validates. MariaDB on localhost (SQL in README).
 - Ports: server 8082, client dev server 3004 (myconext's my-gui uses 3003/8081, don't clash).
 

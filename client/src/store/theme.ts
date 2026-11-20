@@ -1,0 +1,33 @@
+export type Theme = 'light' | 'dark';
+
+const KEY = 'theme';
+
+export const getTheme = (): Theme => {
+    if (typeof window === 'undefined') {
+        return 'light';
+    }
+    try {
+        const stored = window.localStorage.getItem(KEY);
+        if (stored === 'light' || stored === 'dark') {
+            return stored;
+        }
+    } catch {
+        // storage unavailable, fall through to the system preference
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+};
+
+export const applyTheme = (theme: Theme) => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+};
+
+export const setTheme = (theme: Theme) => {
+    try {
+        window.localStorage.setItem(KEY, theme);
+    } catch {
+        // not persisted, still applied for this page view
+    }
+    applyTheme(theme);
+};

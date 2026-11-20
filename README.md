@@ -4,7 +4,7 @@ Internal app for creating notifications for other applications.
 
 Maven multi-module project:
 
-- `server` - Spring Boot server (OIDC secured CRUD API, basic authentication server-to-server API)
+- `server` - Spring Boot server (OIDC session secured CRUD API for the GUI, basic authentication server-to-server API)
 - `client` - React / TypeScript GUI, packaged into the server
 
 ## Database
@@ -26,6 +26,52 @@ FLUSH PRIVILEGES;
 mvn -pl server spring-boot:run -Dspring-boot.run.profiles=local   # fake login, server on :8082
 cd client && yarn dev                                              # GUI on :3004, proxies to the server
 ```
+
+## API
+
+The API for other applications is the server-to-server API below. The examples use the server on http://localhost:8082.
+
+### Server-to-server API (target apps)
+
+Used by the applications the notifications are for. It uses HTTP Basic authentication: the username is the target app
+and the password is the one configured for that app in `notifications.target-apps` of `application.yml` (`myconext` and
+`servicedesk`, both with password `secret` by default). An application only gets its own notifications, and only the
+ones that are active now (`startAt` <= now < `endsAt`), newest first.
+
+```bash
+# the text rendered (and sanitized) as HTML, this is the default
+curl -u myconext:secret "http://localhost:8082/api/external/notifications"
+
+# the markdown source
+curl -u myconext:secret "http://localhost:8082/api/external/notifications?format=markdown"
+```
+
+Response:
+
+```json
+[
+  {
+    "id": 8,
+    "startAt": "2026-11-19T23:00:00Z",
+    "endsAt": "2026-11-27T22:59:59Z",
+    "creator": "jane.doe@example.com",
+    "text": "<p>Planned <strong>maintenance</strong> tonight</p>\n",
+    "format": "html"
+  }
+]
+```
+
+A wrong username or password returns `401`.
+
+### CRUD API (GUI only)
+
+`/api/notifications` is only meant for the GUI. It is secured with the OIDC session login (and CSRF protection),
+bearer tokens are not supported and a request without a session returns `401`. The only API for other applications is
+the server-to-server API above.
+
+Notifications that ended more than 5 days ago are removed by the `ResourceCleaner` (`notifications.cron`). It runs every
+hour and uses ShedLock (table `shedlock`), so only one node runs it at a time. The schedule, the locks and the number of
+days are configured in the `cron` section of `application.yml`.
 
 ## Tests
 

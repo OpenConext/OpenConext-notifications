@@ -18,6 +18,12 @@ public class NotificationsProperties {
 
     private List<TargetApp> targetApps = new ArrayList<>();
 
+    /**
+     * The value that the claim edumember_is_member_of of a user must contain to be allowed to log in.
+     * Blank means no restriction.
+     */
+    private String requiredMemberOf;
+
     @Getter
     @Setter
     public static class TargetApp {

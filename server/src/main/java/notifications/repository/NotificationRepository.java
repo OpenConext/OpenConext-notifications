@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
+    long deleteByEndsAtBefore(Instant threshold);
+
     List<Notification> findAllByOrderByStartAtDesc();
 
     List<Notification> findByTargetAppAndStartAtLessThanEqualAndEndsAtGreaterThanOrderByStartAtDesc(

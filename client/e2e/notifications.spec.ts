@@ -69,6 +69,7 @@ test('edit and delete a notification, then log out and log in again', async ({
     await page.getByTestId('notification-delete-confirm').click();
     await expect(page.getByTestId('empty')).toBeVisible();
 
+    await page.getByTestId('user').click();
     await page.getByTestId('logout').click();
     await expect(page.getByTestId('logged-out')).toBeVisible();
     await expect(page.getByTestId('login-again')).toBeVisible();

@@ -16,6 +16,11 @@ import { LOGIN_URL } from './api/apiFetch';
 import './index.scss';
 import I18n from './locale/I18n';
 import { useConfigStore } from './store/config';
+import { applyTheme, getTheme } from './store/theme';
+
+if (typeof document !== 'undefined') {
+    applyTheme(getTheme());
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -52,7 +57,9 @@ export default function Root() {
     const [queryClient] = useState(() => new QueryClient());
     const config = useConfigStore((state) => state.config);
     const { pathname } = useLocation();
-    const loggedOutPage = pathname === '/logged-out';
+    // pages that are shown without being logged in
+    const loggedOutPage =
+        pathname === '/logged-out' || pathname === '/not-allowed';
 
     useEffect(() => {
         if (!loggedOutPage) {

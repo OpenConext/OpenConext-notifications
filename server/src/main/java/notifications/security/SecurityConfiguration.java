@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * 1. ExternalApiSecurity: server-to-server API for the target apps, HTTP Basic.
- * 2. GuiSecurity: the GUI and its CRUD API, OIDC login (session) or an OIDC access token (introspection).
+ * 2. GuiSecurity: the GUI and its CRUD API, OIDC login (session) only. Access tokens (bearer) are not supported.
  */
 @Configuration
 public class SecurityConfiguration {
@@ -62,7 +62,8 @@ public class SecurityConfiguration {
 
         @Bean
         public SecurityFilterChain guiSecurityFilterChain(HttpSecurity http, Environment environment,
-                                                         ClientRegistrationRepository clientRegistrationRepository) throws Exception {
+                                                         ClientRegistrationRepository clientRegistrationRepository,
+                                                         NotificationsProperties properties) throws Exception {
             http
                     .csrf(csrf -> csrf
                             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -75,8 +76,11 @@ public class SecurityConfiguration {
                     .oauth2Login(login -> login
                             .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(
                                     new ForceAuthnAuthorizationRequestResolver(clientRegistrationRepository)))
+                            .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.oidcUserService(
+                                    new CustomOidcUserService(properties.getRequiredMemberOf())))
+                            // the GUI shows a message to users that are not allowed
+                            .failureHandler(new NotAllowedAuthenticationFailureHandler())
                             .defaultSuccessUrl("/", true))
-                    .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()))
                     // fetch calls from the GUI must get a 401 and not a redirect to the OIDC provider
                     .exceptionHandling(eh -> eh.defaultAuthenticationEntryPointFor(
                             new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),

@@ -161,3 +161,65 @@ main {
     display: flex;
     gap: 8px;
 }
+
+// the text column takes the space that is left (max-width 0 + width 100%), so it never pushes the actions out
+.table-card td.col-text {
+    width: 100%;
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// narrower screens: shorten the text column first, then drop it until the mobile cards take over
+@media (max-width: 62rem) {
+    .table-card .col-text {
+        display: none;
+    }
+}
+
+// mobile: every notification becomes a card with the values listed vertically
+@media (max-width: 54rem) {
+    .table-card {
+        table,
+        tbody,
+        tr,
+        td {
+            display: block;
+            width: 100%;
+        }
+
+        thead {
+            display: none;
+        }
+
+        tbody tr {
+            padding: calc(var(--spacing) * 2) 0;
+        }
+
+        td {
+            display: flex;
+            gap: calc(var(--spacing) * 4);
+            padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 4);
+
+            &[data-label]::before {
+                content: attr(data-label);
+                flex: 0 0 6.5rem;
+                color: var(--muted-foreground);
+                font-weight: 500;
+            }
+
+            &:not([data-label]) {
+                justify-content: flex-end;
+            }
+        }
+
+        td.col-text {
+            display: flex;
+            width: 100%;
+            max-width: none;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+}

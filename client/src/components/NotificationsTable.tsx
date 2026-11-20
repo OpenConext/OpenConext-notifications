@@ -111,6 +111,11 @@ const IconAction = ({
     </Tooltip>
 );
 
+// at most this many characters of the text are shown, CSS shortens it further when space is limited
+const MAX_TEXT = 100;
+const truncate = (text: string) =>
+    text.length > MAX_TEXT ? `${text.substring(0, MAX_TEXT)}…` : text;
+
 export const NotificationsTable = () => {
     const queryClient = useQueryClient();
     const [confirming, setConfirming] = useState<number | null>(null);
@@ -202,6 +207,11 @@ export const NotificationsTable = () => {
                                     {COLUMNS.map((key) => (
                                         <TableHead
                                             key={key}
+                                            className={
+                                                key === 'htmlText'
+                                                    ? 'col-text'
+                                                    : undefined
+                                            }
                                             aria-sort={
                                                 key === sortKey
                                                     ? direction === 'asc'
@@ -249,18 +259,44 @@ export const NotificationsTable = () => {
                                         key={n.id}
                                         data-testid={`notification-${n.id}`}
                                     >
-                                        <TableCell>{n.targetApp}</TableCell>
-                                        <TableCell>
+                                        <TableCell
+                                            data-label={I18n.t(
+                                                'notifications.columns.targetApp',
+                                            )}
+                                        >
+                                            {n.targetApp}
+                                        </TableCell>
+                                        <TableCell
+                                            data-label={I18n.t(
+                                                'notifications.columns.startAt',
+                                            )}
+                                        >
                                             {format(n.startAt)}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell
+                                            data-label={I18n.t(
+                                                'notifications.columns.endsAt',
+                                            )}
+                                        >
                                             {format(n.endsAt)}
                                         </TableCell>
-                                        <TableCell>{n.creator}</TableCell>
-                                        <TableCell data-testid="notification-text">
-                                            {n.htmlText.length > 80
-                                                ? `${n.htmlText.substring(0, 80)}…`
-                                                : n.htmlText}
+                                        <TableCell
+                                            data-label={I18n.t(
+                                                'notifications.columns.creator',
+                                            )}
+                                        >
+                                            {n.creator}
+                                        </TableCell>
+                                        <TableCell
+                                            data-testid="notification-text"
+                                            className="col-text"
+                                            data-label={I18n.t(
+                                                'notifications.columns.text',
+                                            )}
+                                        >
+                                            <div title={n.htmlText}>
+                                                {truncate(n.htmlText)}
+                                            </div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="row-actions">

@@ -32,9 +32,10 @@ public class ResourceCleaner {
         this.notificationRepository = notificationRepository;
     }
 
-    @Scheduled(fixedDelayString = "${cron.cleaner-cron}", initialDelayString = "${cron.cleaner-cron-initial-delay}")
-    @SchedulerLock(name = LOCK_NAME, lockAtLeastFor = "${cron.cleaner-lock-at-least-for}",
-            lockAtMostFor = "${cron.cleaner-lock-at-most-for}")
+    @Scheduled(fixedDelayString = "${cron.cleaner-cron:PT1H}",
+            initialDelayString = "${cron.cleaner-cron-initial-delay:PT10S}")
+    @SchedulerLock(name = LOCK_NAME, lockAtLeastFor = "${cron.cleaner-lock-at-least-for:PT5M}",
+            lockAtMostFor = "${cron.cleaner-lock-at-most-for:PT30M}")
     @Transactional
     public void clean() {
         LOG.info("CRON: Cleaning resources");

@@ -18,6 +18,7 @@ const nl: AppTranslation = {
         previous: 'Vorige',
         next: 'Volgende',
         logout: 'Uitloggen',
+        help: 'Help',
     },
     notifications: {
         title: 'Notificaties',
@@ -53,6 +54,23 @@ const nl: AppTranslation = {
         orPrefix: 'Of',
         login: 'log opnieuw in',
         orSuffix: 'met een andere instelling',
+    },
+    help: {
+        title: 'Help',
+        apiTitle: 'Server-naar-server API',
+        intro: 'De applicaties waarvoor de notificaties zijn gebruiken de server-naar-server API om hun notificaties op te halen. Een applicatie krijgt alleen de eigen notificaties, en alleen de notificaties die nu actief zijn (start <= nu < einde), nieuwste eerst.',
+        auth: 'De API gebruikt HTTP Basic authenticatie: de gebruikersnaam is de doelapplicatie en het wachtwoord is het wachtwoord dat voor die applicatie in de serverconfiguratie is ingesteld.',
+        requestTitle: 'Verzoek',
+        htmlDescription:
+            'De tekst als HTML gerenderd (en gesanitized), dit is de standaard:',
+        markdownDescription: 'De markdown-bron:',
+        responseTitle: 'Antwoord',
+        unauthorized: 'Een onjuiste gebruikersnaam of wachtwoord geeft 401.',
+        howTitle: 'Hoe het werkt',
+        howSource:
+            'De tekst van een notificatie is markdown. De server rendert en sanitized deze naar HTML wanneer het formaat html is.',
+        howCleanup:
+            'Notificaties die meer dan 5 dagen geleden zijn afgelopen worden automatisch verwijderd. Dit draait elk uur, op één node tegelijk.',
     },
     loggedOut: {
         title: 'Je bent uitgelogd',

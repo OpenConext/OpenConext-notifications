@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import {
     CaretDownIcon,
     GlobeIcon,
+    QuestionIcon,
     MoonIcon,
     SignOutIcon,
     SunIcon,
@@ -87,6 +88,13 @@ export const Header = () => {
                                     <SunIcon aria-hidden="true" />
                                 )}
                                 {I18n.t(`common.${otherTheme}Mode`)}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                data-testid="help"
+                                onClick={() => navigate('/help')}
+                            >
+                                <QuestionIcon aria-hidden="true" />
+                                {I18n.t('common.help')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem

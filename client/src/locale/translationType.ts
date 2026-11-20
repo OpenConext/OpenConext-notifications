@@ -16,6 +16,7 @@ export type AppTranslation = {
         previous: string;
         next: string;
         logout: string;
+        help: string;
     };
     notifications: {
         title: string;
@@ -49,6 +50,20 @@ export type AppTranslation = {
         orPrefix: string;
         login: string;
         orSuffix: string;
+    };
+    help: {
+        title: string;
+        apiTitle: string;
+        intro: string;
+        auth: string;
+        requestTitle: string;
+        htmlDescription: string;
+        markdownDescription: string;
+        responseTitle: string;
+        unauthorized: string;
+        howTitle: string;
+        howSource: string;
+        howCleanup: string;
     };
     loggedOut: { title: string; description: string; login: string };
 };

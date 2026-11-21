@@ -128,7 +128,9 @@ export const NotificationForm = ({
                 <Combobox
                     items={targetApps}
                     value={targetApp}
-                    onValueChange={setTargetApp}
+                    onValueChange={(value) =>
+                        setTargetApp(value as string | null)
+                    }
                 >
                     <div className="combobox">
                         <ComboboxInput

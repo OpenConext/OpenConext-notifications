@@ -2,8 +2,6 @@ server:
   port: 8082
   # behind the Apache of the client image / a load balancer, for the OIDC redirect uri
   forward-headers-strategy: framework
-  error:
-    include-message: always
 
 spring:
   application:
@@ -38,6 +36,9 @@ spring:
             jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
+  web:
+    error:
+      include-message: always
 
 management:
   endpoints:

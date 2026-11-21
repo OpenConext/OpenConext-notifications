@@ -54,4 +54,14 @@ class ResourceCleanerTest {
         List<String> remaining = repository.findAll().stream().map(Notification::getHtmlText).sorted().toList();
         assertEquals(List.of("active", "recently ended"), remaining);
     }
+
+    @Test
+    void scheduledCleanRuns() {
+        repository.deleteAll();
+        save("old", Instant.now().minus(6, ChronoUnit.DAYS));
+
+        resourceCleaner.clean();
+
+        assertEquals(0, repository.count());
+    }
 }

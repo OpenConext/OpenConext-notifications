@@ -59,7 +59,8 @@ main {
         display: flex;
         align-items: center;
 
-        img {
+        img,
+        svg {
             display: block;
             height: calc(var(--spacing) * 14);
             width: auto;

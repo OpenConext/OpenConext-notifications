@@ -17,9 +17,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@surfnet/curve-react';
+import { useQuery } from '@tanstack/react-query';
 
-import { logout } from '../api/notifications';
-import logo from '../icons/img.png';
+import { fetchNotifications, logout } from '../api/notifications';
+import { NotificationIcon } from '../icons/NotificationIcon';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
 import { displayName, useConfigStore } from '../store/config';
 import { type Theme, getTheme, setTheme } from '../store/theme';
@@ -28,6 +29,11 @@ export const Header = () => {
     const navigate = useNavigate();
     const user = useConfigStore((state) => state.config?.user);
     const [theme, setThemeState] = useState<Theme>(getTheme);
+    // same query key as the table, so this shares its cache and refreshes after changes
+    const { data: notifications } = useQuery({
+        queryKey: ['notifications'],
+        queryFn: fetchNotifications,
+    });
 
     // the menu offers the language that is not active yet
     const otherLanguage =
@@ -49,9 +55,9 @@ export const Header = () => {
                     aria-label={I18n.t('globalVariables.productName')}
                     data-testid="home"
                 >
-                    <img
-                        src={logo}
-                        alt={I18n.t('globalVariables.productName')}
+                    <NotificationIcon
+                        count={notifications?.length ?? 0}
+                        label={I18n.t('globalVariables.productName')}
                     />
                 </Link>
                 <div className="header-user">

@@ -19,7 +19,13 @@ test('create a notification with markdown preview and retrieve it server-to-serv
     await expect(page.getByTestId('empty')).toBeVisible();
 
     await page.getByTestId('new-notification').click();
-    await page.getByTestId('form-target-app').selectOption(TARGET_APP);
+    // required fields are only validated after the first save attempt
+    await page.getByTestId('form-save').click();
+    await expect(page.getByTestId('form-target-app-error')).toBeVisible();
+    await expect(page.getByTestId('form-text-error')).toBeVisible();
+    await page.getByTestId('form-target-app').click();
+    await page.getByRole('option', { name: TARGET_APP, exact: true }).click();
+    await expect(page.getByTestId('form-target-app-error')).toBeHidden();
     await fillText(page, 'Planned **maintenance** tonight');
     // live preview of the markdown component
     await expect(page.getByTestId('form-text').locator('strong')).toHaveText(
@@ -52,6 +58,8 @@ test('edit and delete a notification, then log out and log in again', async ({
     page,
 }) => {
     await page.goto('/new');
+    await page.getByTestId('form-target-app').click();
+    await page.getByRole('option', { name: TARGET_APP, exact: true }).click();
     await fillText(page, 'First text');
     await page.getByTestId('form-save').click();
     await expect(page.getByTestId('notification-text')).toHaveText(

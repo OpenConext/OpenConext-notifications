@@ -62,7 +62,7 @@ main {
         img,
         svg {
             display: block;
-            height: calc(var(--spacing) * 14);
+            height: 4rem;
             width: auto;
         }
     }
@@ -137,6 +137,15 @@ main {
         gap: 6px;
     }
 
+    .field-error {
+        color: var(--destructive);
+    }
+
+    // the application combobox is half the width, full width on small screens
+    .combobox {
+        width: 50%;
+    }
+
     .dates {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -181,6 +190,10 @@ main {
 
 // mobile: every notification becomes a card with the values listed vertically
 @media (max-width: 54rem) {
+    .form .combobox {
+        width: 100%;
+    }
+
     .table-card {
         table,
         tbody,

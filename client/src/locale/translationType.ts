@@ -42,6 +42,11 @@ export type AppTranslation = {
             endsAt: string;
             text: string;
             invalidPeriod: string;
+            noApplications: string;
+            startInPast: string;
+            targetAppPlaceholder: string;
+            targetAppRequired: string;
+            textRequired: string;
         };
     };
     notAllowed: {

@@ -4,10 +4,14 @@ import rehypeSanitize from 'rehype-sanitize';
 
 import {
     Button,
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
     DatePickerInput,
     Label,
-    NativeSelect,
-    NativeSelectOption,
     Spinner,
 } from '@surfnet/curve-react';
 
@@ -65,29 +69,48 @@ export const NotificationForm = ({
     const targetApps = useConfigStore(
         (state) => state.config?.targetApps ?? [],
     );
-    const [targetApp, setTargetApp] = useState(
-        initial?.targetApp ?? targetApps[0] ?? '',
+    const [targetApp, setTargetApp] = useState<string | null>(
+        initial?.targetApp ?? null,
     );
+    const [submitted, setSubmitted] = useState(false);
+    const initialStart = initial
+        ? startOfDay(new Date(initial.startAt))
+        : undefined;
     const [startDate, setStartDate] = useState<Date | undefined>(
-        initial ? startOfDay(new Date(initial.startAt)) : today(),
+        initialStart ?? today(),
     );
     const [endDate, setEndDate] = useState<Date | undefined>(
         initial ? startOfDay(new Date(initial.endsAt)) : defaultEnd(),
     );
+    // the end can never be before the start: move it along with the start
+    const changeStart = (date: Date | undefined) => {
+        setStartDate(date);
+        if (date && endDate && endDate < date) {
+            setEndDate(date);
+        }
+    };
     const [text, setText] = useState(initial?.htmlText ?? '');
 
     const validPeriod =
         startDate !== undefined &&
         endDate !== undefined &&
         endDate >= startDate;
-    const valid = validPeriod && text.trim() !== '' && targetApp !== '';
+    const appMissing = !targetApp;
+    const textMissing = text.trim() === '';
+    // an existing notification may keep a start date that has passed since
+    const startInPast =
+        startDate !== undefined &&
+        startDate < today() &&
+        startDate.getTime() !== initialStart?.getTime();
+    const valid = validPeriod && !startInPast && !textMissing && !appMissing;
 
     return (
         <form
             className="form"
             onSubmit={(e) => {
                 e.preventDefault();
-                if (!startDate || !endDate) {
+                setSubmitted(true);
+                if (!valid || !startDate || !endDate || !targetApp) {
                     return;
                 }
                 onSave({
@@ -102,18 +125,44 @@ export const NotificationForm = ({
                 <Label htmlFor="targetApp">
                     {I18n.t('notifications.form.targetApp')}
                 </Label>
-                <NativeSelect
-                    id="targetApp"
-                    data-testid="form-target-app"
+                <Combobox
+                    items={targetApps}
                     value={targetApp}
-                    onChange={(e) => setTargetApp(e.target.value)}
+                    onValueChange={setTargetApp}
                 >
-                    {targetApps.map((app) => (
-                        <NativeSelectOption key={app} value={app}>
-                            {app}
-                        </NativeSelectOption>
-                    ))}
-                </NativeSelect>
+                    <div className="combobox">
+                        <ComboboxInput
+                            id="targetApp"
+                            data-testid="form-target-app"
+                            showClear={false}
+                            placeholder={I18n.t(
+                                'notifications.form.targetAppPlaceholder',
+                            )}
+                            aria-invalid={submitted && appMissing}
+                        />
+                    </div>
+                    <ComboboxContent>
+                        <ComboboxEmpty>
+                            {I18n.t('notifications.form.noApplications')}
+                        </ComboboxEmpty>
+                        <ComboboxList>
+                            {(app: string) => (
+                                <ComboboxItem key={app} value={app}>
+                                    {app}
+                                </ComboboxItem>
+                            )}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+                {submitted && appMissing && (
+                    <div
+                        role="alert"
+                        className="field-error"
+                        data-testid="form-target-app-error"
+                    >
+                        {I18n.t('notifications.form.targetAppRequired')}
+                    </div>
+                )}
             </div>
             <div className="dates">
                 <div className="field">
@@ -124,7 +173,10 @@ export const NotificationForm = ({
                         id="startAt"
                         data-testid="form-start-at"
                         date={startDate}
-                        onDateChange={setStartDate}
+                        onDateChange={changeStart}
+                        calendarProps={{
+                            disabled: { before: today() },
+                        }}
                         showClear={false}
                         formatDate={formatDate}
                         parseDate={parseDate}
@@ -139,12 +191,20 @@ export const NotificationForm = ({
                         data-testid="form-ends-at"
                         date={endDate}
                         onDateChange={setEndDate}
+                        calendarProps={{
+                            disabled: { before: startDate ?? today() },
+                        }}
                         showClear={false}
                         formatDate={formatDate}
                         parseDate={parseDate}
                     />
                 </div>
             </div>
+            {startInPast && (
+                <div role="alert" data-testid="form-start-in-past">
+                    {I18n.t('notifications.form.startInPast')}
+                </div>
+            )}
             {!validPeriod && (
                 <div role="alert" data-testid="form-invalid-period">
                     {I18n.t('notifications.form.invalidPeriod')}
@@ -171,6 +231,15 @@ export const NotificationForm = ({
                         }}
                     />
                 </Suspense>
+                {submitted && textMissing && (
+                    <div
+                        role="alert"
+                        className="field-error"
+                        data-testid="form-text-error"
+                    >
+                        {I18n.t('notifications.form.textRequired')}
+                    </div>
+                )}
             </div>
             <div className="actions">
                 <Button
@@ -184,7 +253,7 @@ export const NotificationForm = ({
                 <Button
                     type="submit"
                     data-testid="form-save"
-                    disabled={!valid || saving}
+                    disabled={(submitted && !valid) || saving}
                 >
                     {I18n.t('common.save')}
                 </Button>

@@ -45,6 +45,11 @@ const en: AppTranslation = {
             endsAt: 'End',
             text: 'Text (markdown)',
             invalidPeriod: 'The end must be after the start',
+            noApplications: 'No applications found',
+            startInPast: 'The start cannot be in the past',
+            targetAppPlaceholder: 'Select an application',
+            targetAppRequired: 'Select an application',
+            textRequired: 'Enter the text of the notification',
         },
     },
     notAllowed: {

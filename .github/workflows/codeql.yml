@@ -56,6 +56,8 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          # Cache ~/.m2, so a rate limited (429) Maven Central does not fail the build
+          cache: 'maven'
 
       - name: Set up Node
         uses: actions/setup-node@v7
@@ -75,20 +77,11 @@ jobs:
           # queries: security-extended,security-and-quality
 
 
-      # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
-
-      # ℹ️ Command-line programs to run using the OS shell.
-      # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-
-      #   If the Autobuild fails above, remove it and uncomment the following three lines.
-      #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-
-      # - run: |
-      #     echo "Run, Build Application using script"
-      #     ./location_of_script_within_repo/buildscript.sh
+      # A custom build instead of Autobuild: Autobuild downloads its own Maven from Maven Central
+      # (which regularly answers 429), this uses the Maven of the runner and the cached ~/.m2
+      - name: Build Java
+        if: matrix.language == 'java-kotlin'
+        run: mvn -B clean package -DskipTests --file pom.xml
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4

@@ -11,10 +11,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import io.restassured.RestAssured;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.cookie.CookieFilter;
-import io.restassured.http.ContentType;
-import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import lombok.SneakyThrows;
 import notifications.model.Notification;
@@ -36,7 +33,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
@@ -48,11 +44,8 @@ import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -64,7 +57,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -107,7 +99,7 @@ public abstract class AbstractTest {
     }
 
     @SneakyThrows
-    protected AccessCookieFilter openIDConnectFlow(String path, String sub)  {
+    protected AccessCookieFilter openIDConnectFlow(String path, String sub) {
         return this.openIDConnectFlow(path, sub, s -> {
         }, m -> m);
     }

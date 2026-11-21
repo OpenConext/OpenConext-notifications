@@ -45,6 +45,7 @@ class LocalDevelopmentAuthenticationFilterTest extends AbstractTest {
         given()
                 .accept(ContentType.JSON)
                 .get("/api/notifications")
-                .then().statusCode(200);
+                .then()
+                .statusCode(200);
     }
 }

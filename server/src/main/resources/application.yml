@@ -44,10 +44,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: "health,info"
+      base-path: "/internal"
   endpoint:
+    info:
+      access: unrestricted
     health:
-      show-details: never
+      access: unrestricted
+      show-details: when-authorized
+  info:
+    git:
+      mode: full
 
 # The applications that notifications can be created for. Each target app is also the
 # (basic authentication) username of the server-to-server API: /api/external/notifications.

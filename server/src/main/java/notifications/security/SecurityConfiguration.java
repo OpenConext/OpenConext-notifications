@@ -70,7 +70,9 @@ public class SecurityConfiguration {
                             .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                     .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                     .authorizeHttpRequests(auth -> auth
-                            // the static GUI, the config (tells the GUI to login) and the health check
+                            // the health (load balancer) and info endpoints are never secured
+                            .requestMatchers("/internal/**").permitAll()
+                            // the static GUI and the config (tells the GUI to login) are public as well
                             .requestMatchers("/api/**").authenticated()
                             .anyRequest().permitAll())
                     .oauth2Login(login -> login

@@ -67,6 +67,14 @@ notifications:
       password: secret
     - name: servicedesk
       password: secret
+    - name: invite
+      password: secret
+    - name: access
+      password: secret
+    - name: dashboard
+      password: secret
+    - name: teams
+      password: secret
 
 # The resource cleaner removes the notifications that ended more than 5 days ago. Durations are ISO-8601,
 # the lock makes sure only one node runs the cleaner (lock-at-least-for must be less than the cleaner-cron delay).

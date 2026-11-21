@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
 
 import rehypeSanitize from 'rehype-sanitize';
 
@@ -19,6 +19,7 @@ import type { NotificationInput } from '../api/notifications';
 import I18n from '../locale/I18n';
 import { previewSchema } from '../markdown/previewSchema';
 import { useConfigStore } from '../store/config';
+import { useTheme } from '../store/theme';
 
 // the editor is big, it is only loaded when a notification is created or edited
 const MDEditor = lazy(() => import('@uiw/react-md-editor'));
@@ -66,8 +67,14 @@ export const NotificationForm = ({
     onSave,
     onCancel,
 }: Props) => {
-    const targetApps = useConfigStore(
-        (state) => state.config?.targetApps ?? [],
+    const theme = useTheme();
+    const configApps = useConfigStore((state) => state.config?.targetApps);
+    const targetApps = useMemo(
+        () =>
+            [...(configApps ?? [])].sort((a, b) =>
+                a.localeCompare(b, undefined, { sensitivity: 'base' }),
+            ),
+        [configApps],
     );
     const [targetApp, setTargetApp] = useState<string | null>(
         initial?.targetApp ?? null,
@@ -214,7 +221,7 @@ export const NotificationForm = ({
             )}
             <div
                 className="field"
-                data-color-mode="light"
+                data-color-mode={theme}
                 data-testid="form-text"
             >
                 <Label>{I18n.t('notifications.form.text')}</Label>

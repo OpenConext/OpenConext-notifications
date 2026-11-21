@@ -27,6 +27,22 @@ const exitAfterBuild = (): Plugin => ({
     },
 });
 
+// Chrome DevTools probes this path on the dev server; without an answer react-router logs a
+// "No route matches" 404 error in the console. Answer it before the router sees it.
+const ignoreDevtoolsProbe = (): Plugin => ({
+    name: 'ignore-devtools-probe',
+    apply: 'serve',
+    configureServer(devServer) {
+        devServer.middlewares.use(
+            '/.well-known/appspecific/com.chrome.devtools.json',
+            (_req, res) => {
+                res.statusCode = 404;
+                res.end();
+            },
+        );
+    },
+});
+
 const server = {
     target: 'http://localhost:8082',
     changeOrigin: false,
@@ -35,7 +51,7 @@ const server = {
 
 // https://vite.dev/config/
 export default defineConfig({
-    plugins: [reactRouter(), exitAfterBuild()],
+    plugins: [ignoreDevtoolsProbe(), reactRouter(), exitAfterBuild()],
     build: {
         // the markdown editor (lazy loaded) is about 1.1MB
         chunkSizeWarningLimit: 1200,

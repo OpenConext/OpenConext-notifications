@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import {
@@ -23,12 +22,12 @@ import { fetchNotifications, logout } from '../api/notifications';
 import { NotificationIcon } from '../icons/NotificationIcon';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
 import { displayName, useConfigStore } from '../store/config';
-import { type Theme, getTheme, setTheme } from '../store/theme';
+import { type Theme, setTheme, useTheme } from '../store/theme';
 
 export const Header = () => {
     const navigate = useNavigate();
     const user = useConfigStore((state) => state.config?.user);
-    const [theme, setThemeState] = useState<Theme>(getTheme);
+    const theme = useTheme();
     // same query key as the table, so this shares its cache and refreshes after changes
     const { data: notifications } = useQuery({
         queryKey: ['notifications'],
@@ -85,7 +84,6 @@ export const Header = () => {
                                 data-testid="theme"
                                 onClick={() => {
                                     setTheme(otherTheme);
-                                    setThemeState(otherTheme);
                                 }}
                             >
                                 {otherTheme === 'dark' ? (

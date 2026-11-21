@@ -2242,6 +2242,11 @@ html-void-elements@^3.0.0:
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-3.0.0.tgz#fc9dbd84af9e747249034d4d62602def6517f1d7"
   integrity sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==
 
+html2canvas-pro@^2.6.4:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/html2canvas-pro/-/html2canvas-pro-2.6.4.tgz#687784cb0e722f5dde63cde30684bd686e3be11f"
+  integrity sha512-1SMOfXwMACgQPt1wcKOtuRnBxkcREiJQdOyVpgp6a4/z9Rb/v7QPcvyu5GlxdDDiMznLwKxX5KwvtSlNlZJ7Wg==
+
 i18n-js@^4.5.4:
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-4.5.4.tgz#b26004c5657ee363ef29afea557b1a11938f2227"

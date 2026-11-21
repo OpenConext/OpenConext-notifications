@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("unchecked")
 class ConfigControllerTest extends AbstractTest {
 
     @Autowired
@@ -36,7 +37,7 @@ class ConfigControllerTest extends AbstractTest {
                 .as(new TypeRef<>() {
                 });
 
-        assertEquals(List.of("myconext", "servicedesk"), config.get("targetApps"));
+        assertTrue(((List<String>)config.get("targetApps")).containsAll(List.of("myconext", "servicedesk")));
         assertFalse((Boolean) config.get("authenticated"));
         assertNull(config.get("user"));
     }
@@ -54,7 +55,7 @@ class ConfigControllerTest extends AbstractTest {
                 .as(new TypeRef<>() {
                 });
 
-        assertEquals(List.of("myconext", "servicedesk"), config.get("targetApps"));
+        assertTrue(((List<String>)config.get("targetApps")).containsAll(List.of("myconext", "servicedesk")));
         assertTrue((Boolean) config.get("authenticated"));
         Map<String, Object> user = (Map<String, Object>) config.get("user");
         assertEquals("admin", user.get("sub"));

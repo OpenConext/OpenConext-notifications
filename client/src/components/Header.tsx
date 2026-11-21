@@ -19,6 +19,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchNotifications, logout } from '../api/notifications';
+import { prepareLogoutEffect } from '../effects/logoutEffect';
 import { NotificationIcon } from '../icons/NotificationIcon';
 import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../locale/I18n';
 import { displayName, useConfigStore } from '../store/config';
@@ -41,6 +42,10 @@ export const Header = () => {
 
     const doLogout = async () => {
         await logout();
+        // easter egg: snapshot the screen while it is still intact, the lazy
+        // loaded effect then plays on top of the logged out page
+        const playEffect = await prepareLogoutEffect();
+        void playEffect?.();
         useConfigStore.setState({ config: null });
         await navigate('/logged-out');
     };

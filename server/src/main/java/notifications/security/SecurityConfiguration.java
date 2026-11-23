@@ -79,7 +79,8 @@ public class SecurityConfiguration {
                             .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(
                                     new ForceAuthnAuthorizationRequestResolver(clientRegistrationRepository)))
                             .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.oidcUserService(
-                                    new CustomOidcUserService(properties.getRequiredMemberOf())))
+                                    new CustomOidcUserService(
+                                            properties.isAllowAnyUser() ? null : properties.getRequiredMemberOf())))
                             // the GUI shows a message to users that are not allowed
                             .failureHandler(new NotAllowedAuthenticationFailureHandler())
                             .defaultSuccessUrl("/", true))

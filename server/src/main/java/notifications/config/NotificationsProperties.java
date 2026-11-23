@@ -24,6 +24,12 @@ public class NotificationsProperties {
      */
     private String requiredMemberOf;
 
+    /**
+     * Feature toggle: when true (the default, also when missing) any user that can authenticate may log in
+     * and {@link #requiredMemberOf} is ignored.
+     */
+    private boolean allowAnyUser = true;
+
     @Getter
     @Setter
     public static class TargetApp {

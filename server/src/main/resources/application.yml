@@ -60,6 +60,9 @@ management:
 # (basic authentication) username of the server-to-server API: /api/external/notifications.
 # We don't encode the passwords, they are injected from the deployment.
 notifications:
+  # Feature toggle: when true (default, also when missing) anybody that authenticates may log in
+  # and required-member-of is ignored. Set to false to enforce required-member-of.
+  allow-any-user: true
   # Users must have this value in the claim edumember_is_member_of to be allowed to log in
   required-member-of: "urn:mace:surf.nl:invite.test2.surfconext.nl:12cbb06a-2af8-41e1-ac4e-6175cacd1307:surfconext_tpm_core"
   target-apps:

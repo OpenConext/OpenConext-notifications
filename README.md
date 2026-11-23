@@ -69,6 +69,16 @@ A wrong username or password returns `401`.
 bearer tokens are not supported and a request without a session returns `401`. The only API for other applications is
 the server-to-server API above.
 
+#### Who may log in
+
+Feature toggle `notifications.allow-any-user` in `application.yml` (default `true`, also when the property is missing
+in an environment):
+
+- `true`: anybody that authenticates at the OIDC provider may log in, `notifications.required-member-of` is ignored.
+- `false`: only users whose `edumember_is_member_of` claim contains `notifications.required-member-of` may log in.
+  Others are sent to the GUI page `/not-allowed` and get `401` on the API. A blank `required-member-of` means no
+  restriction.
+
 Notifications that ended more than 5 days ago are removed by the `ResourceCleaner` (`notifications.cron`). It runs every
 hour and uses ShedLock (table `shedlock`), so only one node runs it at a time. The schedule, the locks and the number of
 days are configured in the `cron` section of `application.yml`.

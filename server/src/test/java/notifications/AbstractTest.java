@@ -188,7 +188,8 @@ public abstract class AbstractTest {
                 .statusCode(200)
                 .extract()
                 .cookie("XSRF-TOKEN");
-        CsrfToken csrfToken = new DefaultCsrfToken("X-XSRF-TOKEN", "_csrf", xsrfToken);
+        // a rejected login (not a member) has no session, so no CSRF cookie either
+        CsrfToken csrfToken = xsrfToken == null ? null : new DefaultCsrfToken("X-XSRF-TOKEN", "_csrf", xsrfToken);
         return new AccessCookieFilter(cookieFilter, location, csrfToken);
     }
 

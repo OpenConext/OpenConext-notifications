@@ -2,7 +2,7 @@ import { Header } from '../components/Header';
 import I18n from '../locale/I18n';
 import './help.scss';
 
-const baseUrl = () => "https://notifications.example.surfconext.nl/";
+const baseUrl = () => 'https://notifications.example.surfconext.nl/';
 
 const RESPONSE = `[
   {

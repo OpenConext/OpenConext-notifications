@@ -2,7 +2,7 @@ import { Header } from '../components/Header';
 import I18n from '../locale/I18n';
 import './help.scss';
 
-const baseUrl = () => window.location.origin;
+const baseUrl = () => "https://notifications.example.surfconext.nl/";
 
 const RESPONSE = `[
   {
@@ -30,11 +30,11 @@ export default function Help() {
                 <h3>{I18n.t('help.requestTitle')}</h3>
                 <p>{I18n.t('help.htmlDescription')}</p>
                 <pre>
-                    <code>{`curl -u myconext:secret "${url}"`}</code>
+                    <code>{`curl -u myconext:password "${url}"`}</code>
                 </pre>
                 <p>{I18n.t('help.markdownDescription')}</p>
                 <pre>
-                    <code>{`curl -u myconext:secret "${url}?format=markdown"`}</code>
+                    <code>{`curl -u myconext:password "${url}?format=markdown"`}</code>
                 </pre>
 
                 <h3>{I18n.t('help.responseTitle')}</h3>

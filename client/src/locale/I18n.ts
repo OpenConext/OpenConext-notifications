@@ -30,6 +30,10 @@ export const I18n = new I18nRemote(translations, {
 export const switchLocale = (locale: string) => {
     Cookies.set('lang', locale, { expires: 365, sameSite: 'strict' });
     I18n.locale = locale;
+    // the lang parameter wins over the cookie on load, so the reload that follows picks it up
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', locale);
+    window.history.replaceState(window.history.state, '', url);
 };
 
 export default I18n;
